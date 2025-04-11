@@ -1,0 +1,69 @@
+services:
+  laravel:
+    container_name: laravel
+    hostname: local.laravel
+    # https://hub.docker.com/r/bitnami/laravel
+    image: bitnami/laravel:latest
+
+    env_file:
+      - ./laravel/env/laravel.env
+
+    working_dir: /app
+    restart: unless-stopped
+
+    #volumes:
+    #  - ./laravel/projetos:/app
+
+    command: >
+      bash -c "
+        apt-get update -y && apt-get install unzip -y &&
+        npm install &&
+        composer install &&
+        php artisan key:generate &&
+        php artisan migrate &&
+        php artisan serve --host=0.0.0.0 --port=8000
+      "
+
+    depends_on:
+      - mariadb
+      - phpmyadmin
+
+    networks:
+      - rede
+
+  mariadb:
+    container_name: mariadb
+    hostname: local.mariadb
+    # https://hub.docker.com/r/bitnami/mariadb
+    image: bitnami/mariadb:latest
+
+    env_file:
+      - ./mariadb/env/mariadb.env
+
+    volumes:
+      - ./mariadb/data:/bitnami/mariadb
+
+    networks:
+      - rede
+
+  phpmyadmin:
+    container_name: phpmyadmin
+    hostname: local.phpmyadmin
+    # https://hub.docker.com/r/bitnami/phpmyadmin
+    image: bitnami/phpmyadmin:latest
+
+    env_file:
+      - ./phpmyadmin/env/phpmyadmin.env
+
+    ports:
+      - 8080:8080
+
+    depends_on:
+      - mariadb
+
+    networks:
+      - rede
+
+networks:
+  rede:
+    driver: bridge

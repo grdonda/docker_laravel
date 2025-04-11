@@ -1,0 +1,11 @@
+laravel/data
+!laravel/data/.gitkeep
+
+laravel/projetos
+!laravel/projetos/.gitkeep
+
+mariadb/data
+!mariadb/data/.gitkeep
+
+phpmyadmin/data
+!phpmyadmin/data/.gitkeep
